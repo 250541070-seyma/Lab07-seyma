@@ -1,0 +1,67 @@
+﻿vtysdb> 
+vtysdb> 
+vtysdb> 2.1 (2000 ve sonrasi dogumlu uye sayisi): 35
+
+vtysdb> 
+vtysdb> 
+vtysdb> 
+2.2 (Ucreti 500'den yuksek dersler):
+
+vtysdb> [
+  {
+    ad: 'Kuvvet Antrenman?? ??? Orta',
+    ucret: 550
+  },
+  {
+    ad: 'Core G????lendirme ??? Orta',
+    ucret: 600
+  },
+  {
+    ad: 'Boks Temelleri ??? Orta',
+    ucret: 550
+  },
+  {
+    ad: 'K??demli Fitness ??? ??leri',
+    ucret: 600
+  },
+  {
+    ad: 'Y??zme Teknikleri ??? ??leri',
+    ucret: 550
+  }
+]
+
+vtysdb> 
+vtysdb> 
+vtysdb> 
+vtysdb> 
+2.3 (Tam 3 telefonu olan uye sayisi): 48
+
+vtysdb> 
+vtysdb> 
+vtysdb> 
+2.4 (En cok kayit alan ilk 5 ders):
+
+vtysdb> | | | | [
+  {
+    _id: 25,
+    adet: 19
+  },
+  {
+    _id: 13,
+    adet: 18
+  },
+  {
+    _id: 22,
+    adet: 18
+  },
+  {
+    _id: 2,
+    adet: 17
+  },
+  {
+    _id: 21,
+    adet: 16
+  }
+]
+
+vtysdb> 

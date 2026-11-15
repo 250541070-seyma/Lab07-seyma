@@ -1,0 +1,14 @@
+﻿=== 1. INDEKS ONCESI (COLLSCAN) ===
+stage: COLLSCAN
+nReturned: 12
+totalDocsExamined: 379
+totalKeysExamined: 0
+
+=== 2. INDEKS OLUSTURMA ===
+ders_id_1
+
+=== 3. INDEKS SONRASI (IXSCAN) ===
+stage: FETCH -> IXSCAN
+nReturned: 12
+totalDocsExamined: 12
+totalKeysExamined: 12

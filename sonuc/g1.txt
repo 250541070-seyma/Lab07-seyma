@@ -1,0 +1,2 @@
+﻿Uye 20 oksuz kayit sayisi: 4
+PostgreSQL'de ayni silme denemesinde yabanci anahtar (FOREIGN KEY) kisiti nedeniyle islem reddedilmis ve hata (violates foreign key constraint) alinmisti; alt tabloda bagli kayitlar varken ust tablodaki kaydin silinmesine izin verilmemisti.

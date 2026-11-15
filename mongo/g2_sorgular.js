@@ -1,22 +1,19 @@
-// =====================================================
-// Föy 07 / Görev 2 — Doküman sorguları
-// Her sorguyu ilgili "// Soru 2.x" başlığının ALTINA yazın;
-// çıktıları mongosh'ta çalıştırıp sonuc/g2.txt dosyasına kaydedin.
-// =====================================================
-db = db.getSiblingDB('vtysdb');
+﻿// 2.1: 2000 ve sonrasi dogumlu uye sayisi
+const g2_1 = db.uyeler.countDocuments({ dogum_yili: { $gte: 2000 } });
+print("2.1 (2000 ve sonrasi dogumlu uye sayisi): " + g2_1);
 
-// Soru 2.1
-// (2000 ve sonrası doğumlu üye sayısı)
+// 2.2: Ucreti 500'den yuksek derslerin adi ve ucreti
+print("\n2.2 (Ucreti 500'den yuksek dersler):");
+printjson(db.dersler.find({ ucret: { $gt: 500 } }, { ad: 1, ucret: 1, _id: 0 }).toArray());
 
+// 2.3: Tam 3 telefonu olan uye sayisi
+const g2_3 = db.uyeler.countDocuments({ telefonlar: { $size: 3 } });
+print("\n2.3 (Tam 3 telefonu olan uye sayisi): " + g2_3);
 
-// Soru 2.2
-// (Ücreti 500'den yüksek derslerin adı ve ücreti)
-
-
-// Soru 2.3
-// (Tam 3 telefonu olan üye sayısı — gömülü diziyi sorgulayın)
-
-
-// Soru 2.4
-// (aggregate + $group: her dersin kayıt sayısı, en çoktan aza ilk 5)
-
+// 2.4: Her dersin kayit sayisi, en coktan aza, ilk 5
+print("\n2.4 (En cok kayit alan ilk 5 ders):");
+printjson(db.kayitlar.aggregate([
+  { $group: { _id: "$ders_id", adet: { $sum: 1 } } },
+  { $sort: { adet: -1 } },
+  { $limit: 5 }
+]).toArray());

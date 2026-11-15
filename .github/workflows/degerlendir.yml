@@ -1,0 +1,42 @@
+name: Otomatik Değerlendirme
+
+on:
+  push:
+    branches: [main]      # feedback dalinda kosmasin: Classroom 50'nin geri bildirim PR'i orada acilir
+  workflow_dispatch:
+
+# Öğrenci arka arkaya push ederse önceki koşuyu iptal et:
+# hem sonuç daha hızlı gelir hem Actions dakikası boşa gitmez.
+concurrency:
+  group: degerlendir-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  degerlendir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      mongo:
+        image: mongo:7
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: Depoyu al
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Bağımlılıkları kur
+        run: |
+          pip install pymongo
+          npm install -g mongosh
+
+      - name: Değerlendir
+        env:
+          MONGO_URI: mongodb://localhost:27017
+        run: python kontrol/kontrol.py

@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: vtys-postgres
+    environment:
+      POSTGRES_USER: vtys
+      POSTGRES_PASSWORD: vtys2026
+      POSTGRES_DB: vtysdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./veri:/veri
+
+  mongo:
+    image: mongo:7
+    container_name: vtys-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+      - ./veri:/veri
+      - ./mongo:/mongo
+
+  redis:
+    image: redis:7
+    container_name: vtys-redis
+    ports:
+      - "6379:6379"
+
+  # Kendinizi PUSH ETMEDEN kontrol edin — Actions dakikası harcamaz:
+  #     docker compose run --rm kontrol
+  # Aynı değerlendirici, aynı puan. Yalnız doğru sonucu aldığınızda push edin.
+  kontrol:
+    build:
+      context: .
+      dockerfile: kontrol/Dockerfile
+    profiles: ["arac"]
+    depends_on:
+      - postgres
+      - mongo
+      - redis
+    environment:
+      MONGO_URI: "mongodb://mongo:27017"
+    volumes:
+      - .:/is
+    working_dir: /is
+    command: python kontrol/kontrol.py
+
+volumes:
+  pipcache:
+  pgdata:
+  mongodata:

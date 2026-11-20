@@ -1,4 +1,4 @@
-﻿Araç: Gemini, 15.11.2026
+﻿Araç: Gemini, 20.11.2026
 
 ## Verilen İstem
 
@@ -6,68 +6,42 @@ FıratFit veritabanında Föy 04 Görev 2.4'teki 'eğitmen başına toplam kayı
 
 ## Modelin İlk Ürettiği Boru Hattı (Gereksiz İki Aşamalı Lookup)
 
-    db.kayitlar.aggregate([
-      { $lookup: { from: 'dersler', localField: 'ders_id', foreignField: '_id', as: 'ders' } },
-      { $unwind: '$ders' },
-      { $lookup: { from: 'egitmenler', localField: 'ders.egitmen_id', foreignField: '_id', as: 'egitmen' } },
-      { $unwind: '$egitmen' },
-      { $group: { _id: '$egitmen.ad', toplam_kayit: { $sum: 1 } } },
-      { $sort: { toplam_kayit: -1 } }
-    ])
+```javascript
+db.kayitlar.aggregate([
+  { $lookup: { from: 'dersler', localField: 'ders_id', foreignField: '_id', as: 'ders' } },
+  { $unwind: '$ders' },
+  { $lookup: { from: 'egitmenler', localField: 'ders.egitmen_id', foreignField: '_id', as: 'egitmen' } },
+  { $unwind: '$egitmen' },
+  { $group: { _id: '$egitmen.ad', toplam_kayit: { $sum: 1 } } },
+  { $sort: { toplam_kayit: -1 } }
+])
+```
 
 ## Sadeleştirilmiş Boru Hattı ve Ortam Çıktısı
 
-    db.kayitlar.aggregate([
-      { $lookup: { from: 'dersler', localField: 'ders_id', foreignField: '_id', as: 'ders' } },
-      { $unwind: '$ders' },
-      { $group: { _id: '$ders.egitmen.ad', toplam_kayit: { $sum: 1 } } },
-      { $sort: { toplam_kayit: -1 } }
-    ])
+```javascript
+db.kayitlar.aggregate([
+  { $lookup: { from: 'dersler', localField: 'ders_id', foreignField: '_id', as: 'ders' } },
+  { $unwind: '$ders' },
+  { $group: { _id: '$ders.egitmen.ad', toplam_kayit: { $sum: 1 } } },
+  { $sort: { toplam_kayit: -1 } }
+])
+```
 
-Çalıştırma Çıktısı:
+**Çalıştırma Çıktısı:**
+```javascript
 [
-  {
-    _id: 'Selim ??ahin',
-    toplam_kayit: 80
-  },
-  {
-    _id: 'Serkan Ko??',
-    toplam_kayit: 66
-  },
-  {
-    _id: 'Kemal ??etin',
-    toplam_kayit: 56
-  },
-  {
-    _id: 'Yakup K??l????',
-    toplam_kayit: 41
-  },
-  {
-    _id: 'Deniz Demir',
-    toplam_kayit: 35
-  },
-  {
-    _id: 'Burak Ko??',
-    toplam_kayit: 30
-  },
-  {
-    _id: 'Murat Aslan',
-    toplam_kayit: 27
-  },
-  {
-    _id: 'Serkan Do??an',
-    toplam_kayit: 20
-  },
-  {
-    _id: 'Ece Ko??',
-    toplam_kayit: 12
-  },
-  {
-    _id: 'Mehmet Y??ld??z',
-    toplam_kayit: 12
-  }
+  { _id: 'Emine Taş', toplam_kayit: 73 },
+  { _id: 'Serkan Arslan', toplam_kayit: 64 },
+  { _id: 'Murat Koç', toplam_kayit: 62 },
+  { _id: 'Nazlı Kaya', toplam_kayit: 58 },
+  { _id: 'Elif Özdemir', toplam_kayit: 50 },
+  { _id: 'Ece Polat', toplam_kayit: 36 },
+  { _id: 'Murat Taş', toplam_kayit: 24 },
+  { _id: 'Tolga Aydın', toplam_kayit: 19 }
 ]
+```
 
 ## Eleştiri ve Değerlendirme
 
-Model, ilişkisel şemadaki üç tablolu JOIN mantığını birebir taklit ederek hem dersler hem de olmayan bir egitmenler koleksiyonu için iki ayrı $lookup aşaması üretmiştir. Oysa doküman modelimizde eğitmen bilgisi zaten dersler koleksiyonunun içine gömülü alt doküman olarak yerleştirilmiştir ve ayrı bir egitmenler koleksiyonu bulunmamaktadır. Bu nedenle ikinci $lookup aşaması tamamen gereksizdir ve çalıştırıldığında boş sonuç dönmesine yol açar. İkinci $lookup ve $unwind aşamaları kaldırılıp doğrudan gömülü alana ($ders.egitmen.ad) nokta notasyonuyla erişildiğinde sorgu hem sadeleşmiş hem de PostgreSQL tarafındaki sonuçla birebir aynı çıktıyı üretmiştir.
+Yapay zeka modeli, ilişkisel veritabanındaki 3 tablolu `JOIN` alışkanlığını doğrudan MongoDB'ye uyarlamaya çalışarak hem `dersler` hem de gerçekte var olmayan `egitmenler` koleksiyonu için iki ayrı `$lookup` aşaması üretmiştir. Oysa doküman tasarımımızda eğitmen bilgileri ayrı bir koleksiyonda tutulmak yerine `dersler` koleksiyonundaki her dokümanın içine gömülü alt doküman (`egitmen`) olarak yerleştirilmiştir. Bu nedenle ikinci `$lookup` ve `$unwind` adımları gereksizdir ve çalıştırıldığında eşleşme bulunamadığı için boş dizi (`[]`) döndürür. Gereksiz ikinci birleştirme kaldırılıp gruplama doğrudan gömülü alana (`$ders.egitmen.ad`) nokta notasyonu ile yapıldığında sorgu hem kısalmış hem de PostgreSQL'deki sonuçlarla birebir örtüşen doğru çıktıyı vermiştir.

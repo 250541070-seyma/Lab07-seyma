@@ -1,18 +1,17 @@
-﻿127.0.0.1:6379> SET toplam:kayit 379
+﻿127.0.0.1:6379> SET toplam:kayit 386
 OK
 127.0.0.1:6379> GET toplam:kayit
-379
+"386"
 127.0.0.1:6379> EXPIRE toplam:kayit 60
-1
+(integer) 1
 127.0.0.1:6379> TTL toplam:kayit
-60
+(integer) 50
+-- (60 saniye beklendikten sonra) --
 127.0.0.1:6379> GET toplam:kayit
 (nil)
 127.0.0.1:6379> INCR ziyaret:bugun
-1
+(integer) 1
 127.0.0.1:6379> INCR ziyaret:bugun
-2
+(integer) 2
 127.0.0.1:6379> INCR ziyaret:bugun
-3
-
-Sektorde GET/SET sik okunan sayfa veya sorgu sonuclarini bellekte tutarak (cache) veritabani yukunu azaltmak icin, TTL onbellege alinan bu verilerin belirli bir sure sonra otomatik gecersiz kilinip taze kalmasini saglamak icin, INCR ise anlik sayfa goruntuleme, begeni veya API istek limitleri (rate limiting) gibi yuksek hizli canli sayaclari atomik olarak saymak icin kullanilir.
+(integer) 3

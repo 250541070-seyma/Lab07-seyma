@@ -1,2 +1,8 @@
-﻿Uye 20 oksuz kayit sayisi: 4
-PostgreSQL'de ayni silme denemesinde yabanci anahtar (FOREIGN KEY) kisiti nedeniyle islem reddedilmis ve hata (violates foreign key constraint) alinmisti; alt tabloda bagli kayitlar varken ust tablodaki kaydin silinmesine izin verilmemisti.
+﻿-- Görev 1: CRUD ve Öksüz Kayıt Çıktısı
+{ acknowledged: true, insertedId: 9001 }
+{ acknowledged: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0 }
+{ acknowledged: true, deletedCount: 1 }
+Üye 20 için kalan öksüz kayıt sayısı: 1
+
+Yorum:
+PostgreSQL'de (Föy 02, Görev 5) yabancı anahtar (FOREIGN KEY) kısıtı bulunduğu için alt tabloda (kayitlar) ilişkili kaydı olan bir üyeyi doğrudan silmeye çalıştığımızda veritabanı bütünlüğü korumak adına hata verip silme işlemini engellemişti; MongoDB'de ise yabancı anahtar denetimi olmadığı için üye silindi ancak kaydı öksüz olarak kaldı.

@@ -25,3 +25,4 @@
   { _id: 21, adet: 17 },
   { _id: 8, adet: 15 }
 ]
+2.2 (Ucreti 500 TL uzeri ders sayisi): 11
